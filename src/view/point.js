@@ -1,4 +1,4 @@
-import { getTimeDuration } from '../utils';
+import { getTimeDuration, createElement } from '../utils';
 
 const createPointOfferTemplate = (offers) =>
   offers.length > 0 ? offers.map(({title, price}) => `
@@ -10,7 +10,7 @@ const createPointOfferTemplate = (offers) =>
     : '';
 
 
-export const createPointTemplate = (point) => {
+const createPointTemplate = (point) => {
   const {type, offers, destination, basicPrice, dateStart, dateEnd, isFavorite} = point;
 
   const favoriteClassName = isFavorite ? 'event__favorite-btn--active' : '';
@@ -50,3 +50,27 @@ export const createPointTemplate = (point) => {
 </div>
 </li>`;
 };
+
+export default class Point {
+  constructor(point) {
+    this._point = point;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPointTemplate(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

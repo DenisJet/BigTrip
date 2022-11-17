@@ -1,5 +1,16 @@
 import { generateDestination } from '../mock/point-data';
 import { TYPES, CITIES } from '../const';
+import { createElement } from '../utils';
+
+const BLANK_POINT = {
+  type: '',
+  offers: [],
+  destination: '',
+  basicPrice: '',
+  dateStart: '',
+  dateEnd: '',
+  isFavorite: false,
+};
 
 const createTypeItemTemplate = (availableTypes, currentType) =>
   availableTypes.map((type) =>
@@ -45,13 +56,7 @@ const createDestinationTemplate = (destination) =>
 </section>` : '';
 
 export const createEditPointTemplate = (point, destination = {}) => {
-  const {
-    type = '',
-    offers = [],
-    basicPrice = '',
-    dateStart = '',
-    dateEnd = '',
-  } = point;
+  const { type, offers, basicPrice, dateStart, dateEnd} = point;
 
   destination = generateDestination();
 
@@ -114,3 +119,26 @@ export const createEditPointTemplate = (point, destination = {}) => {
 </li>
 `;
 };
+
+export default class PointEdit {
+  constructor(point = BLANK_POINT) {
+    this._point = point;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createEditPointTemplate(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

@@ -1,3 +1,28 @@
+// render функция
+
+const RenderPosition = {
+  AFTERBEGIN: 'afterbegin',
+  BEFOREEND: 'beforeend',
+};
+
+const render = (container, element, place) => {
+  switch (place) {
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+    case RenderPosition.BEFOREEND:
+      container.append(element);
+      break;
+  }
+};
+
+const createElement = (template) => {
+  const newElement = document.createElement('div');
+  newElement.innerHTML = template;
+
+  return newElement.firstElementChild;
+};
+
 // случайное число
 
 const getRandomInteger = (a = 0, b = 1) => {
@@ -37,4 +62,15 @@ const getTimeDuration = (dateStart, dateEnd) => {
   return `${daysDiff} ${hoursDiff} ${minutesDiff}`;
 };
 
-export { getRandomInteger, getRandomArrayElement, generateRandomArray, getTimeDuration };
+//isEscEvent
+
+const isEscEvent = (evt) => (evt.key === 'Escape' || evt.key === 'Esc');
+
+export { getRandomInteger,
+  getRandomArrayElement,
+  generateRandomArray,
+  getTimeDuration,
+  render,
+  createElement,
+  RenderPosition,
+  isEscEvent };
