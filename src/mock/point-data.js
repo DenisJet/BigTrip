@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import { TYPES, CITIES } from '../const';
-import { getRandomInteger, getRandomArrayElement, generateRandomArray } from '../utils';
+import { getRandomInteger, getRandomArrayElement, generateRandomArray } from '../utils/common';
 
 //types and offers
 
