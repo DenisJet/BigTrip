@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 //timeDuration
 
 const getTimeDuration = (dateStart, dateEnd) => {
@@ -9,4 +11,64 @@ const getTimeDuration = (dateStart, dateEnd) => {
   return `${daysDiff} ${hoursDiff} ${minutesDiff}`;
 };
 
-export { getTimeDuration };
+// Compare two dates
+
+export const compareTwoDates = (dateA, dateB) => {
+  if (dateA === null || dateB === null) {
+    return null;
+  }
+
+  return dayjs(dateA).diff(dateB);
+};
+
+// SortBy
+
+const getWeightForEmptyValue = (valueA, valueB) => {
+  if (valueA === null && valueB === null) {
+    return 0;
+  }
+
+  if (valueA === null) {
+    return 1;
+  }
+
+  if (valueB === null) {
+    return -1;
+  }
+
+  return null;
+};
+
+const sortByDay = (pointA, pointB) => {
+  const weight = getWeightForEmptyValue(pointA.dateStart, pointB.dateStart);
+
+  if (weight !== null) {
+    return weight;
+  }
+
+  return compareTwoDates(pointA.dateStart, pointB.dateStart);
+};
+
+const sortByPrice = (pointA, pointB) => {
+  const weight = getWeightForEmptyValue(pointA.basicPrice, pointB.basicPrice);
+
+  if (weight !== null) {
+    return weight;
+  }
+
+  return pointB.basicPrice - pointA.basicPrice;
+};
+
+const sortByTime = (pointA, pointB) => {
+  const durationPointA = compareTwoDates(pointA.dateEnd, pointA.dateStart);
+  const durationPointB = compareTwoDates(pointB.dateEnd, pointB.dateStart);
+  const weight = getWeightForEmptyValue(durationPointA, durationPointB);
+
+  if (weight !== null) {
+    return weight;
+  }
+
+  return durationPointB - durationPointA;
+};
+
+export { getTimeDuration, sortByDay, sortByPrice, sortByTime };

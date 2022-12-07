@@ -2,4 +2,10 @@ const TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Transport', 'Drive', 'Flight', '
 
 const CITIES = ['Krasnoyarsk', 'Yakutsk', 'Novosibirsk', 'Kazan', 'Innopolis', 'Chelyabinsk', 'Ekaterinburg'];
 
-export { TYPES, CITIES };
+const SortType = {
+  DAY: 'day',
+  TIME: 'time',
+  PRICE: 'price',
+};
+
+export { TYPES, CITIES, SortType };
