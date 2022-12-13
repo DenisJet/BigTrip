@@ -7,6 +7,10 @@ const getRandomInteger = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
+// случайное булевое значение
+
+const randomBoolean = () => Math.random() >= 0.5;
+
 //случайный элемент массива
 
 const getRandomArrayElement = (array) => array[(getRandomInteger(0, (array.length - 1)))];
@@ -46,4 +50,11 @@ const updateItem = (items, update) => {
   ];
 };
 
-export { getRandomInteger, getRandomArrayElement, generateRandomArray, isEscEvent, updateItem };
+export {
+  getRandomInteger,
+  getRandomArrayElement,
+  generateRandomArray,
+  isEscEvent,
+  updateItem,
+  randomBoolean
+};

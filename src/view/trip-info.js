@@ -1,8 +1,9 @@
 import AbstractView from './abstract';
+import { humanizeDate } from '../utils/point';
 
 const getRoute = (points) => {
   const destinations = new Set();
-  points.forEach((point) => destinations.add(point.destination));
+  points.forEach((point) => destinations.add(point.destination.name));
   const routePoints = Array.from(destinations);
   const route = routePoints.length <= 3 ?
     routePoints.join(' &#8212 ')
@@ -12,7 +13,7 @@ const getRoute = (points) => {
 };
 
 const getDates = (points) => points && points.length ?
-  `${points[0].dateStart.format('MMM D')} &mdash; ${points[points.length - 1].dateEnd.format('MMM D')}`
+  `${humanizeDate(points[0].dateStart, 'MMM D')} &mdash; ${humanizeDate(points[points.length - 1].dateEnd, 'MMM D')}`
   : '';
 
 const createTripInfoTemplate = (points) => `

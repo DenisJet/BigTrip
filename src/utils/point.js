@@ -1,9 +1,13 @@
 import dayjs from 'dayjs';
 
+const humanizeDate = (date, format) => dayjs(date).format(format);
+
 //timeDuration
 
 const getTimeDuration = (dateStart, dateEnd) => {
-  const difference = dateEnd.diff(dateStart, 'minute');
+  const date1 = dayjs(dateStart);
+  const date2 = dayjs(dateEnd);
+  const difference = date2.diff(date1, 'minute');
   const daysDiff = (difference / 1440) > 1 ? `${Math.trunc(difference / 1440)}D` : '';
   const hoursDiff = ((difference % 1440) / 60) > 1 ? `${Math.trunc((difference % 1440) / 60)}H` : '';
   const minutesDiff = `${Math.trunc((difference % 1440) % 60)}M`;
@@ -13,7 +17,7 @@ const getTimeDuration = (dateStart, dateEnd) => {
 
 // Compare two dates
 
-export const compareTwoDates = (dateA, dateB) => {
+const compareTwoDates = (dateA, dateB) => {
   if (dateA === null || dateB === null) {
     return null;
   }
@@ -71,4 +75,4 @@ const sortByTime = (pointA, pointB) => {
   return durationPointB - durationPointA;
 };
 
-export { getTimeDuration, sortByDay, sortByPrice, sortByTime };
+export { getTimeDuration, sortByDay, sortByPrice, sortByTime, humanizeDate, compareTwoDates };

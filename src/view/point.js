@@ -1,13 +1,13 @@
-import { getTimeDuration } from '../utils/point';
+import { getTimeDuration, humanizeDate } from '../utils/point';
 import AbstractView from './abstract';
 
 const createPointOfferTemplate = (offers) =>
-  offers.length > 0 ? offers.map(({title, price}) => `
+  offers.length > 0 ? offers.map(({title, price, isChecked}) => isChecked ? `
     <li class="event__offer">
       <span class="event__offer-title">${title}</span>
       &plus;&euro;&nbsp;
       <span class="event__offer-price">${price}</span>
-    </li>`).join('')
+    </li>` : '').join('')
     : '';
 
 
@@ -19,16 +19,16 @@ const createPointTemplate = (point) => {
   return `
 <li class="trip-events__item">
 <div class="event">
-  <time class="event__date" datetime="${dateStart.format('YYYY-DD-MM')}">${dateStart.format('MMM D')}</time>
+  <time class="event__date" datetime="${dateStart}">${humanizeDate(dateStart, 'MMM D')}</time>
   <div class="event__type">
     <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
   </div>
-  <h3 class="event__title">${type} ${destination}</h3>
+  <h3 class="event__title">${type} ${destination.name}</h3>
   <div class="event__schedule">
     <p class="event__time">
-      <time class="event__start-time" datetime="${dateStart.format()}">${dateStart.format('HH:mm')}</time>
+      <time class="event__start-time" datetime="${dateStart}">${humanizeDate(dateStart, 'HH:mm')}</time>
       &mdash;
-      <time class="event__end-time" datetime="${dateEnd.format()}">${dateEnd.format('HH:mm')}</time>
+      <time class="event__end-time" datetime="${dateEnd}">${humanizeDate(dateEnd, 'HH:mm')}</time>
     </p>
     <p class="event__duration">${getTimeDuration(dateStart, dateEnd)}</p>
   </div>

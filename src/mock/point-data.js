@@ -1,7 +1,12 @@
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
 import { TYPES, CITIES } from '../const';
-import { getRandomInteger, getRandomArrayElement, generateRandomArray } from '../utils/common';
+import {
+  getRandomInteger,
+  getRandomArrayElement,
+  generateRandomArray,
+  randomBoolean
+} from '../utils/common';
 
 //types and offers
 
@@ -10,26 +15,32 @@ const generateOffer = (type) => {
     {
       title: 'Choose seats',
       price: 5,
+      isChecked: randomBoolean(),
     },
     {
       title: 'Travel by train',
       price: 40,
+      isChecked: randomBoolean(),
     },
     {
       title: 'Order uber',
       price: 20,
+      isChecked: randomBoolean(),
     },
     {
       title: 'Add luggage',
       price: 50,
+      isChecked: randomBoolean(),
     },
     {
       title: 'Add meal',
       price: 15,
+      isChecked: randomBoolean(),
     },
     {
       title: 'Switch to comfort',
       price: 80,
+      isChecked: randomBoolean(),
     },
   ];
 
@@ -50,7 +61,9 @@ const generatePicture = () => ({
   description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
 });
 
-const generateDestination = () => {
+const generatePicturesArray = () =>  new Array(getRandomInteger(1, 5)).fill().map(generatePicture);
+
+const generateDescription = () => {
   const availableDescriptions = [
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     'Cras aliquet varius magna, non porta ligula feugiat eget.',
@@ -65,12 +78,15 @@ const generateDestination = () => {
     'In rutrum ac purus sit amet tempus.',
   ];
 
-  return {
-    name: getRandomArrayElement(CITIES),
-    description: generateRandomArray(availableDescriptions, 1, 5).join(' '),
-    pictures: new Array(getRandomInteger(1, 5)).fill().map(generatePicture),
-  };
+  return generateRandomArray(availableDescriptions, 1, 5).join(' ');
 };
+
+const generateDestination = () => ({
+  name: getRandomArrayElement(CITIES),
+  description: generateDescription(),
+  pictures: generatePicturesArray(),
+});
+
 
 //generateDate
 
@@ -95,12 +111,22 @@ const generatePoint = () => {
     id: nanoid(),
     type,
     offers: getOffers(type, offers),
-    destination: destination.name,
+    destination: {
+      name: destination.name,
+      description: destination.description,
+      pictures: destination.pictures,
+    },
     basicPrice: getRandomInteger(100, 1000),
-    dateStart: date.start,
-    dateEnd: date.end,
+    dateStart: date.start.toISOString(),
+    dateEnd: date.end.toISOString(),
     isFavorite: Boolean(getRandomInteger()),
   };
 };
 
-export { generateDestination, generatePoint };
+export {
+  generateDestination,
+  generatePoint,
+  generateOffers,
+  getOffers,
+  generateDescription,
+  generatePicturesArray };
