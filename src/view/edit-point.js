@@ -8,15 +8,20 @@ import { TYPES, CITIES } from '../const';
 import { humanizeDate, compareTwoDates } from '../utils/point';
 import SmartView from './smart';
 import flatpickr from 'flatpickr';
+import dayjs from 'dayjs';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const BLANK_POINT = {
-  type: '',
-  offers: [],
-  destination: {},
+  type: TYPES[0],
+  offers: getOffers(TYPES[0], generateOffers(TYPES)),
+  destination: {
+    name: CITIES[0],
+    description: '',
+    pictures: '',
+  },
   basicPrice: '',
-  dateStart: '',
-  dateEnd: '',
+  dateStart: dayjs().toDate(),
+  dateEnd: dayjs().toDate(),
   isFavorite: false,
 };
 
@@ -57,7 +62,7 @@ const createDestinationTemplate = (destination) =>
     <p class="event__destination-description">${destination.description}</p>
     <div class="event__photos-container">
       <div class="event__photos-tape">
-      ${destination.pictures.length > 0 ?
+      ${destination.pictures && destination.pictures.length > 0 ?
     destination.pictures.map((pic) =>
       `<img class="event__photo" src="${pic.src}" alt="Event photo"></img>`).join('')
     : ''}
@@ -112,7 +117,7 @@ export const createEditPointTemplate = (point) => {
         <span class="visually-hidden">Price</span>
         &euro;
       </label>
-      <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basicPrice}">
+      <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basicPrice}" required>
     </div>
 
     <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitDisabled ? 'disabled' : ''}>Save</button>
@@ -139,14 +144,27 @@ export default class PointEdit extends SmartView {
 
     this._rollUpClickHandler = this._rollUpClickHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._typeToggleHandler = this._typeToggleHandler.bind(this);
     this._destinationToggleHandler = this._destinationToggleHandler.bind(this);
     this._dateStartChangeHandler = this._dateStartChangeHandler.bind(this);
     this._dateEndChangeHandler = this._dateEndChangeHandler.bind(this);
+    this._priceToggleHandler = this._priceToggleHandler.bind(this);
 
     this._setInnerHandlers();
     this._setStartDatePicker();
     this._setEndDatePicker();
+  }
+
+  removeElement() {
+    super.removeElement();
+
+    if (this._startDatePicker || this._endDatePicker) {
+      this._startDatePicker.destroy();
+      this._startDatePicker = null;
+      this._endDatePicker.destroy();
+      this._endDatePicker = null;
+    }
   }
 
   reset(point) {
@@ -165,6 +183,7 @@ export default class PointEdit extends SmartView {
     this._setEndDatePicker();
     this.setRollUpClickHandler(this._callback.rollUpClick);
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setDeleteClickHandler(this._callback.deleteClick);
   }
 
   _setStartDatePicker() {
@@ -208,6 +227,7 @@ export default class PointEdit extends SmartView {
   _setInnerHandlers() {
     this.getElement().querySelector('.event__type-group').addEventListener('change', this._typeToggleHandler);
     this.getElement().querySelector('.event__input--destination').addEventListener('change', this._destinationToggleHandler);
+    this.getElement().querySelector('.event__input--price').addEventListener('change', this._priceToggleHandler);
   }
 
   _dateStartChangeHandler(userDateStart) {
@@ -251,16 +271,33 @@ export default class PointEdit extends SmartView {
     evt.preventDefault();
 
     if (!CITIES.includes(evt.target.value)) {
-      return;
+      evt.target.setCustomValidity('Выберите город из списка');
+    } else {
+      evt.target.setCustomValidity('');
+      this.updateData({
+        destination: {
+          name: evt.target.value,
+          description: generateDescription(),
+          pictures: generatePicturesArray(),
+        },
+      });
     }
 
-    this.updateData({
-      destination: {
-        name: evt.target.value,
-        description: generateDescription(),
-        pictures: generatePicturesArray(),
-      },
-    });
+    evt.target.reportValidity();
+  }
+
+  _priceToggleHandler(evt) {
+    evt.preventDefault();
+
+    if (!/^\d+$/.test(evt.target.value)) {
+      evt.target.setCustomValidity('Введите цену');
+    } else {
+      evt.target.setCustomValidity('');
+      this.updateData({
+        basicPrice: parseInt(evt.target.value, 10),
+      });
+    }
+    evt.target.reportValidity();
   }
 
   _rollUpClickHandler(evt) {
@@ -281,6 +318,18 @@ export default class PointEdit extends SmartView {
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector('.event--edit').addEventListener('submit', this._formSubmitHandler);
+  }
+
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+
+    this._callback.deleteClick(PointEdit.parseStateToData(this._state));
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formDeleteClickHandler);
   }
 
   static parseDataToState(data) {

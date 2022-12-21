@@ -3,9 +3,9 @@ import AbstractView from './abstract';
 const getTripCost = (points) => {
   let totalBasicPrice = 0;
   let totalOffersPrice = 0;
-  points.map((point) => {
+  points.forEach((point) => {
     totalBasicPrice += point.basicPrice;
-    point.offers.map((offer) => totalOffersPrice += offer.price);
+    point.offers.forEach((offer) => totalOffersPrice += offer.price);
   });
 
   return totalBasicPrice + totalOffersPrice;

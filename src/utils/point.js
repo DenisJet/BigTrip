@@ -1,10 +1,10 @@
 import dayjs from 'dayjs';
 
-const humanizeDate = (date, format) => dayjs(date).format(format);
+export const humanizeDate = (date, format) => dayjs(date).format(format);
 
 //timeDuration
 
-const getTimeDuration = (dateStart, dateEnd) => {
+export const getTimeDuration = (dateStart, dateEnd) => {
   const date1 = dayjs(dateStart);
   const date2 = dayjs(dateEnd);
   const difference = date2.diff(date1, 'minute');
@@ -17,7 +17,7 @@ const getTimeDuration = (dateStart, dateEnd) => {
 
 // Compare two dates
 
-const compareTwoDates = (dateA, dateB) => {
+export const compareTwoDates = (dateA, dateB) => {
   if (dateA === null || dateB === null) {
     return null;
   }
@@ -27,7 +27,7 @@ const compareTwoDates = (dateA, dateB) => {
 
 // SortBy
 
-const getWeightForEmptyValue = (valueA, valueB) => {
+export const getWeightForEmptyValue = (valueA, valueB) => {
   if (valueA === null && valueB === null) {
     return 0;
   }
@@ -43,7 +43,7 @@ const getWeightForEmptyValue = (valueA, valueB) => {
   return null;
 };
 
-const sortByDay = (pointA, pointB) => {
+export const sortByDay = (pointA, pointB) => {
   const weight = getWeightForEmptyValue(pointA.dateStart, pointB.dateStart);
 
   if (weight !== null) {
@@ -53,7 +53,7 @@ const sortByDay = (pointA, pointB) => {
   return compareTwoDates(pointA.dateStart, pointB.dateStart);
 };
 
-const sortByPrice = (pointA, pointB) => {
+export const sortByPrice = (pointA, pointB) => {
   const weight = getWeightForEmptyValue(pointA.basicPrice, pointB.basicPrice);
 
   if (weight !== null) {
@@ -63,7 +63,7 @@ const sortByPrice = (pointA, pointB) => {
   return pointB.basicPrice - pointA.basicPrice;
 };
 
-const sortByTime = (pointA, pointB) => {
+export const sortByTime = (pointA, pointB) => {
   const durationPointA = compareTwoDates(pointA.dateEnd, pointA.dateStart);
   const durationPointB = compareTwoDates(pointB.dateEnd, pointB.dateStart);
   const weight = getWeightForEmptyValue(durationPointA, durationPointB);
@@ -75,4 +75,5 @@ const sortByTime = (pointA, pointB) => {
   return durationPointB - durationPointA;
 };
 
-export { getTimeDuration, sortByDay, sortByPrice, sortByTime, humanizeDate, compareTwoDates };
+export const isDatesEqual = (dateA, dateB) =>
+  (dateA === null && dateB === null) ? true : dayjs(dateA).isSame(dateB, 'D');
